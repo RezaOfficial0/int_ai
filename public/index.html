@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INT.AI — Enterprise AI Engineering &amp; Infrastructure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #090C10;
+    --surface: #10151C;
+    --surface-alt: #141B23;
+    --line: #212B35;
+    --line-soft: #171F28;
+    --text-primary: #E8EDF1;
+    --text-secondary: #8593A0;
+    --text-dim: #56626D;
+    --accent: #1A43BF;
+    --accent-dim: #1111d5;
+    --accent-warm: #D98B4F;
+    --danger: #D9724F;
+    --radius: 3px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Blueprint grid backdrop */
+  .grid-bg{
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.5;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  a{ color: inherit; text-decoration: none; }
+  .mono{ font-family: var(--mono); }
+
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* ---------- Nav ---------- */
+  header{
+    position: fixed; top:0; left:0; right:0; z-index: 100;
+    background: rgba(9,12,16,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav{
+    max-width: 1180px; margin: 0 auto; padding: 0 32px;
+    height: 64px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: 0.02em;
+    display:flex; align-items:center; gap:10px;
+  }
+  .status-dot{
+    width: 7px; height:7px; border-radius:50%; background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(79,216,176,0.6);
+    animation: pulse-dot 2.4s infinite;
+  }
+  @keyframes pulse-dot{
+    0%{ box-shadow: 0 0 0 0 rgba(79,216,176,0.5); }
+    70%{ box-shadow: 0 0 0 7px rgba(79,216,176,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(79,216,176,0); }
+  }
+  .nav-links{ display:flex; gap: 28px; align-items:center; }
+  .nav-links a{
+    font-family: var(--mono); font-size: 12.5px; color: var(--text-secondary);
+    letter-spacing: 0.03em; text-transform: uppercase; transition: color .2s;
+  }
+  .nav-links a:hover{ color: var(--accent); }
+  .nav-cta{
+    border: 1px solid var(--line); padding: 8px 16px; border-radius: var(--radius);
+    color: var(--text-primary) !important; font-size: 12px !important;
+  }
+  .nav-cta:hover{ border-color: var(--accent); color: var(--accent) !important; }
+  .nav-toggle{ display:none; }
+
+  /* ---------- Eyebrow / section labels ---------- */
+  .eyebrow{
+    font-family: var(--mono); font-size: 12px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    display:flex; align-items:center; gap:10px; margin-bottom: 18px;
+  }
+  .eyebrow::before{ content:''; width: 18px; height:1px; background: var(--accent); }
+
+  section{ position:relative; padding: 120px 0; border-bottom: 1px solid var(--line-soft); }
+  h2{
+    font-family: var(--display); font-weight: 600; font-size: clamp(28px,3.6vw,42px);
+    letter-spacing: -0.01em; max-width: 700px; margin-bottom: 20px;
+  }
+  .section-intro{ color: var(--text-secondary); max-width: 560px; font-size: 16px; margin-bottom: 64px; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 200px 0 100px; border-bottom: 1px solid var(--line-soft);
+    position: relative;
+  }
+  .hero-grid{ display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+  .hero h1{
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(40px, 5.6vw, 68px); line-height: 1.03; letter-spacing: -0.02em;
+  }
+  .hero h1 .accent-word{ color: var(--accent); }
+  .hero-sub{
+    color: var(--text-secondary); font-size: 18px; max-width: 480px; margin: 26px 0 36px;
+  }
+  .hero-ctas{ display:flex; gap: 14px; flex-wrap: wrap; }
+  .btn{
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.03em;
+    padding: 14px 22px; border-radius: var(--radius); display:inline-flex; align-items:center; gap: 8px;
+    transition: all .2s;
+  }
+  .btn-primary{ background: var(--accent); color: #06110D; font-weight: 600; }
+  .btn-primary:hover{ background: #0000b3; }
+  .btn-ghost{ border: 1px solid var(--line); color: var(--text-primary); }
+  .btn-ghost:hover{ border-color: var(--text-secondary); }
+
+  .hero-meta{ display:flex; gap: 32px; margin-top: 56px; flex-wrap: wrap; }
+  .hero-meta div{ font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
+  .hero-meta strong{ display:block; color: var(--text-primary); font-family: var(--body); font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+
+  /* ---------- Pipeline diagram (signature element) ---------- */
+  .diagram-panel{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 20px; position: relative;
+  }
+  .diagram-panel .panel-label{
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+    display:flex; justify-content: space-between; margin-bottom: 12px; letter-spacing: 0.05em;
+  }
+  .diagram-panel .panel-label span:last-child{ color: var(--accent); }
+  svg.pipeline{ width: 100%; height: auto; display:block; }
+  .node-box{ fill: var(--surface-alt); stroke: var(--line); stroke-width: 1; }
+  .node-label{ font-family: var(--mono); font-size: 10.5px; fill: var(--text-secondary); }
+  .flow-line{ stroke: var(--line); stroke-width: 1.5; fill:none; }
+  .flow-dash{
+    stroke: var(--accent); stroke-width: 1.5; fill:none;
+    stroke-dasharray: 6 10; stroke-linecap: round;
+    animation: dash-move 2.6s linear infinite;
+  }
+  @keyframes dash-move{ to{ stroke-dashoffset: -160; } }
+  .node-pulse{ fill: var(--accent); opacity: 0; }
+
+  /* ---------- Problem ledger ---------- */
+  .ledger{ border-top: 1px solid var(--line); }
+  .ledger-row{
+    display:grid; grid-template-columns: 60px 1fr; gap: 24px;
+    padding: 22px 0; border-bottom: 1px solid var(--line);
+    transition: background .2s;
+  }
+  .ledger-row:hover{ background: rgba(79,216,176,0.03); }
+  .ledger-num{ font-family: var(--mono); color: var(--text-dim); font-size: 13px; padding-top: 3px; }
+  .ledger-text{ font-size: 16px; color: var(--text-primary); }
+
+  /* ---------- Ecosystem grid ---------- */
+  .eco-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .eco-cell{
+    background: var(--surface); padding: 26px 20px; min-height: 120px;
+    display:flex; flex-direction: column; justify-content: flex-end;
+    transition: background .25s;
+  }
+  .eco-cell:hover{ background: var(--surface-alt); }
+  .eco-cell span{ font-size: 14.5px; font-weight: 500; line-height: 1.3; }
+
+  /* ---------- Services ---------- */
+  .services-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .service-card{
+    background: var(--surface); padding: 32px 26px; position: relative;
+  }
+  .service-card .tag{ font-family: var(--mono); font-size: 11px; color: var(--accent-warm); letter-spacing: 0.05em; }
+  .service-card h3{
+    font-family: var(--display); font-size: 19px; font-weight: 600; margin: 14px 0 10px;
+  }
+  .service-card p{ color: var(--text-secondary); font-size: 14.5px; }
+
+  /* ---------- Methodology ---------- */
+  .phases{ position: relative; }
+  .phase-track{
+    position: absolute; left: 27px; top: 14px; bottom: 14px; width: 1px;
+    background: repeating-linear-gradient(var(--line), var(--line) 4px, transparent 4px, transparent 9px);
+  }
+  .phase{ display:grid; grid-template-columns: 56px 1fr; gap: 28px; padding: 28px 0; position: relative; }
+  .phase-num{
+    font-family: var(--mono); font-size: 13px; color: var(--bg); background: var(--accent);
+    width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+    z-index: 1; font-weight: 700;
+  }
+  .phase-body h4{ font-family: var(--display); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+  .phase-tasks{ display:flex; gap: 10px; flex-wrap: wrap; }
+  .phase-tasks span{
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-secondary);
+    border: 1px solid var(--line); padding: 5px 10px; border-radius: 20px;
+  }
+
+  /* ---------- Industries ---------- */
+  .industries-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .industry-card{
+    border: 1px solid var(--line); border-radius: 6px; padding: 26px 22px;
+    background: var(--surface); transition: border-color .2s, transform .2s;
+  }
+  .industry-card:hover{ border-color: var(--accent-dim); transform: translateY(-3px); }
+  .industry-card h4{ font-family: var(--display); font-size: 17px; margin-bottom: 14px; font-weight: 600; }
+  .industry-card ul{ list-style:none; }
+  .industry-card li{
+    font-size: 13.5px; color: var(--text-secondary); padding: 5px 0 5px 14px; position: relative;
+  }
+  .industry-card li::before{
+    content:''; position:absolute; left:0; top: 12px; width: 5px; height: 1px; background: var(--accent);
+  }
+
+  /* ---------- Stack ---------- */
+  .stack-group{ margin-bottom: 34px; }
+  .stack-group h5{
+    font-family: var(--mono); font-size: 12px; color: var(--text-dim); letter-spacing: 0.1em;
+    margin-bottom: 14px; text-transform: uppercase;
+  }
+  .chip-row{ display:flex; flex-wrap: wrap; gap: 10px; }
+  .chip{
+    font-family: var(--mono); font-size: 13px; padding: 8px 14px; border: 1px solid var(--line);
+    border-radius: var(--radius); color: var(--text-primary); background: var(--surface);
+  }
+  .stack-columns{ display:grid; grid-template-columns: 1fr 1fr; gap: 0 60px; }
+
+  /* ---------- Architecture strip ---------- */
+  .arch-strip{ overflow-x: auto; }
+
+  /* ---------- Security checklist ---------- */
+  .sec-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; }
+  .sec-item{ display:flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
+  .sec-check{
+    width: 18px; height:18px; border: 1px solid var(--accent); border-radius: 3px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sec-check::after{ content:''; width:8px; height:8px; background: var(--accent); border-radius: 1px; }
+  .sec-item span{ font-size: 15px; }
+
+  /* ---------- Deployment ---------- */
+  .deploy-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .deploy-card{ background: var(--surface); padding: 30px 24px; }
+  .deploy-card .badge{
+    font-family: var(--mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.08em;
+    border: 1px solid var(--accent-dim); display:inline-block; padding: 3px 9px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .deploy-card h4{ font-family: var(--display); font-size: 18px; margin-bottom: 10px; font-weight: 600; }
+  .deploy-card p{ font-size: 13.5px; color: var(--text-secondary); }
+
+  /* ---------- Comparison table ---------- */
+  .compare{ width: 100%; border-collapse: collapse; }
+  .compare th{
+    font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+    text-align: left; padding: 14px 20px; color: var(--text-dim); border-bottom: 1px solid var(--line);
+  }
+  .compare th:last-child{ color: var(--accent); }
+  .compare td{ padding: 16px 20px; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+  .compare td:first-child{ color: var(--text-secondary); }
+  .compare td:last-child{ color: var(--text-primary); font-weight: 500; }
+  .compare tr:hover td{ background: rgba(79,216,176,0.03); }
+
+  /* ---------- Engagement steps ---------- */
+  .steps-strip{ display:grid; grid-template-columns: repeat(8, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .step-cell{ background: var(--surface); padding: 20px 16px; min-height: 140px; display:flex; flex-direction:column; justify-content:space-between; }
+  .step-cell .num{ font-family: var(--mono); color: var(--accent); font-size: 13px; }
+  .step-cell .label{ font-size: 13px; font-weight: 500; line-height: 1.35; }
+
+  /* ---------- Commercial models ---------- */
+  .models-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .model-card{ border: 1px solid var(--line); border-radius: 6px; padding: 24px; background: var(--surface); }
+  .model-card .type{ font-family: var(--mono); font-size: 11px; color: var(--accent-warm); letter-spacing: 0.06em; margin-bottom: 10px; }
+  .model-card h4{ font-family: var(--display); font-size: 16.5px; font-weight: 600; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap{ display:grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+  .roadmap::before{ content:''; position:absolute; top: 11px; left:0; right:0; height:1px; background: var(--line); }
+  .road-item{ position: relative; padding-top: 34px; padding-right: 24px; }
+  .road-item::before{
+    content:''; position:absolute; top: 4px; left:0; width: 15px; height:15px; border-radius:50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .road-item .year{ font-family: var(--mono); font-size: 14px; color: var(--accent); margin-bottom: 10px; display:block; }
+  .road-item p{ color: var(--text-secondary); font-size: 14.5px; }
+
+  /* ---------- Contact / Footer ---------- */
+  footer{ padding: 110px 0 50px; }
+  .contact-top{ display:grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; margin-bottom: 80px; }
+  footer h2{ margin-bottom: 0; }
+  .contact-links{ display:flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .contact-links a{
+    font-family: var(--mono); font-size: 15px; border-bottom: 1px solid var(--line); padding-bottom: 4px;
+    transition: border-color .2s, color .2s;
+  }
+  .contact-links a:hover{ color: var(--accent); border-color: var(--accent); }
+  .footer-bottom{
+    display:flex; justify-content: space-between; align-items:center; padding-top: 30px;
+    border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--text-dim); flex-wrap: wrap; gap: 12px;
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{ opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity: 1; transform: translateY(0); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .eco-grid{ grid-template-columns: repeat(2,1fr); }
+    .services-grid{ grid-template-columns: repeat(2,1fr); }
+    .industries-grid{ grid-template-columns: repeat(2,1fr); }
+    .deploy-grid{ grid-template-columns: repeat(2,1fr); }
+    .models-grid{ grid-template-columns: repeat(1,1fr); }
+    .roadmap{ grid-template-columns: repeat(2,1fr); row-gap: 40px; }
+    .roadmap::before{ display:none; }
+    .steps-strip{ grid-template-columns: repeat(4,1fr); }
+    .stack-columns{ grid-template-columns: 1fr; }
+    .sec-grid{ grid-template-columns: 1fr; }
+    .contact-top{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px){
+    .nav-links{ display:none; }
+    section{ padding: 80px 0; }
+    .hero{ padding: 140px 0 70px; }
+    .eco-grid{ grid-template-columns: 1fr; }
+    .services-grid{ grid-template-columns: 1fr; }
+    .industries-grid{ grid-template-columns: 1fr; }
+    .deploy-grid{ grid-template-columns: 1fr; }
+    .steps-strip{ grid-template-columns: repeat(2,1fr); }
+    .roadmap{ grid-template-columns: 1fr; }
+    .compare{ font-size: 13px; }
+    .compare td, .compare th{ padding: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<header>
+  <div class="nav">
+    <div class="logo"><span class="status-dot"></span>INT.AI</div>
+    <nav class="nav-links">
+      <a href="#solution">Solution</a>
+      <a href="#services">Services</a>
+      <a href="#industries">Industries</a>
+      <a href="#stack">Stack</a>
+      <a href="#security">Security</a>
+      <a href="#contact" class="nav-cta">Start a conversation</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Enterprise AI Engineering &amp; Infrastructure</div>
+        <h1>Own your <span class="accent-word">intelligence</span>. Stop renting it.</h1>
+        <p class="hero-sub">We design, build, and maintain AI systems that become permanent infrastructure inside your organization — not a subscription you're still paying for in five years.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-primary">Book a discovery workshop →</a>
+          <a href="#solution" class="btn btn-ghost">See how it's built</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>On-prem or private cloud</strong>Deployed inside your perimeter</div>
+          <div><strong>Open foundation models</strong>Llama, Qwen, Mistral, DeepSeek</div>
+          <div><strong>Built for regulated sectors</strong>Banking, health, gov, legal</div>
+        </div>
+      </div>
+
+      <div class="diagram-panel">
+        <div class="panel-label"><span>ARCH / reference-pipeline.svg</span><span>● live</span></div>
+        <svg class="pipeline" viewBox="0 0 480 460" xmlns="http://www.w3.org/2000/svg">
+          <!-- connecting lines (vertical zigzag flow) -->
+          <path class="flow-line" d="M80,40 L80,90" />
+          <path class="flow-line" d="M80,90 L400,90 L400,150" />
+          <path class="flow-line" d="M400,150 L400,190" />
+          <path class="flow-line" d="M400,190 L80,190 L80,250" />
+          <path class="flow-line" d="M80,250 L80,290" />
+          <path class="flow-line" d="M80,290 L400,290 L400,350" />
+          <path class="flow-line" d="M400,350 L400,390" />
+
+          <path class="flow-dash" d="M80,40 L80,90" />
+          <path class="flow-dash" d="M80,90 L400,90 L400,150" />
+          <path class="flow-dash" d="M400,150 L400,190" />
+          <path class="flow-dash" d="M400,190 L80,190 L80,250" />
+          <path class="flow-dash" d="M80,250 L80,290" />
+          <path class="flow-dash" d="M80,290 L400,290 L400,350" />
+          <path class="flow-dash" d="M400,350 L400,390" />
+
+          <!-- nodes -->
+          <g>
+            <rect class="node-box" x="20" y="14" width="120" height="30" rx="3"/>
+            <text class="node-label" x="80" y="33" text-anchor="middle">DATA SOURCES</text>
+          </g>
+          <g>
+            <rect class="node-box" x="340" y="94" width="120" height="30" rx="3"/>
+            <text class="node-label" x="400" y="113" text-anchor="middle">ETL PIPELINE</text>
+          </g>
+          <g>
+            <rect class="node-box" x="340" y="164" width="120" height="30" rx="3"/>
+            <text class="node-label" x="400" y="183" text-anchor="middle">EMBEDDING</text>
+          </g>
+          <g>
+            <rect class="node-box" x="20" y="194" width="120" height="30" rx="3"/>
+            <text class="node-label" x="80" y="213" text-anchor="middle">VECTOR DB</text>
+          </g>
+          <g>
+            <rect class="node-box" x="20" y="264" width="120" height="30" rx="3"/>
+            <text class="node-label" x="80" y="283" text-anchor="middle">FOUNDATION MODEL</text>
+          </g>
+          <g>
+            <rect class="node-box" x="340" y="294" width="120" height="30" rx="3"/>
+            <text class="node-label" x="400" y="313" text-anchor="middle">BUSINESS LOGIC</text>
+          </g>
+          <g>
+            <rect class="node-box" x="340" y="394" width="120" height="30" rx="3" stroke="#4FD8B0"/>
+            <text class="node-label" x="400" y="413" text-anchor="middle" fill="#4FD8B0">YOUR APPLICATIONS</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROBLEM ============ -->
+  <section id="problem">
+    <div class="wrap reveal">
+      <div class="eyebrow">03 · The enterprise AI problem</div>
+      <h2>The true cost of renting intelligence shows up later.</h2>
+      <p class="section-intro">As adoption of external AI providers grows inside an organization, the same seven issues surface — usually after the contract is already signed.</p>
+      <div class="ledger">
+        <div class="ledger-row"><div class="ledger-num">01</div><div class="ledger-text">High recurring API costs that scale with usage, not with value delivered</div></div>
+        <div class="ledger-row"><div class="ledger-num">02</div><div class="ledger-text">Vendor lock-in to a provider's roadmap, pricing, and availability decisions</div></div>
+        <div class="ledger-row"><div class="ledger-num">03</div><div class="ledger-text">Data privacy concerns from sending proprietary information off-premise</div></div>
+        <div class="ledger-row"><div class="ledger-num">04</div><div class="ledger-text">Limited customization to fit domain-specific language and workflows</div></div>
+        <div class="ledger-row"><div class="ledger-num">05</div><div class="ledger-text">Compliance challenges in regulated industries with strict data handling rules</div></div>
+        <div class="ledger-row"><div class="ledger-num">06</div><div class="ledger-text">No infrastructure ownership — the capability disappears if the bill stops</div></div>
+        <div class="ledger-row"><div class="ledger-num">07</div><div class="ledger-text">Performance limitations on domain-specific tasks a generic model wasn't built for</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOLUTION ============ -->
+  <section id="solution">
+    <div class="wrap reveal">
+      <div class="eyebrow">04 · Our solution</div>
+      <h2>A full intelligent ecosystem, not a chatbot.</h2>
+      <p class="section-intro">Instead of integrating a chat window, we build the ecosystem of assistants, agents, and search systems that runs your organization's actual work.</p>
+      <div class="eco-grid">
+        <div class="eco-cell"><span>Private AI Assistants</span></div>
+        <div class="eco-cell"><span>Enterprise Search</span></div>
+        <div class="eco-cell"><span>Knowledge Management</span></div>
+        <div class="eco-cell"><span>AI Agents</span></div>
+        <div class="eco-cell"><span>Document Intelligence</span></div>
+        <div class="eco-cell"><span>Predictive Analytics</span></div>
+        <div class="eco-cell"><span>Workflow Automation</span></div>
+        <div class="eco-cell"><span>Internal Copilots</span></div>
+        <div class="eco-cell"><span>Customer Support AI</span></div>
+        <div class="eco-cell"><span>Industry-Specific Platforms</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services">
+    <div class="wrap reveal">
+      <div class="eyebrow">05 · Core services</div>
+      <h2>What we deliver, end to end.</h2>
+      <p class="section-intro">From the first readiness assessment to the infrastructure that keeps running after go-live.</p>
+      <div class="services-grid">
+        <div class="service-card"><div class="tag">STRATEGY</div><h3>AI Strategy Consulting</h3><p>Identify opportunities, define a roadmap, and assess technical readiness before a line of code is written.</p></div>
+        <div class="service-card"><div class="tag">BUILD</div><h3>Enterprise AI Development</h3><p>Custom systems built for your business processes — never adapted from a generic template.</p></div>
+        <div class="service-card"><div class="tag">MODELS</div><h3>LLM Integration</h3><p>Select, adapt, fine-tune, and deploy open foundation models suited to your actual workloads.</p></div>
+        <div class="service-card"><div class="tag">KNOWLEDGE</div><h3>Retrieval-Augmented Generation</h3><p>Knowledge systems powered directly by your own documentation and structured data.</p></div>
+        <div class="service-card"><div class="tag">AUTOMATION</div><h3>Intelligent AI Agents</h3><p>Autonomous agents that execute real workflows across your existing enterprise systems.</p></div>
+        <div class="service-card"><div class="tag">TUNING</div><h3>Fine-Tuning</h3><p>Adapt foundation models to your industry's language, terminology, and edge cases.</p></div>
+        <div class="service-card"><div class="tag">INFRA</div><h3>AI Infrastructure</h3><p>Complete deployment pipelines built for scale, from GPU provisioning to CI/CD.</p></div>
+        <div class="service-card"><div class="tag">OPS</div><h3>AI Maintenance</h3><p>Ongoing monitoring, optimization, and updates long after the system goes live.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHODOLOGY ============ -->
+  <section id="methodology">
+    <div class="wrap reveal">
+      <div class="eyebrow">06 · Delivery methodology</div>
+      <h2>Five phases. No shortcuts.</h2>
+      <p class="section-intro">The same disciplined sequence runs through every engagement, regardless of industry or scale.</p>
+      <div class="phases">
+        <div class="phase-track"></div>
+        <div class="phase">
+          <div class="phase-num">1</div>
+          <div class="phase-body">
+            <h4>Discovery</h4>
+            <div class="phase-tasks"><span>Business discovery</span><span>Requirements analysis</span><span>Data assessment</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">2</div>
+          <div class="phase-body">
+            <h4>Architecture</h4>
+            <div class="phase-tasks"><span>Solution architecture</span><span>Model selection</span><span>Infrastructure planning</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">3</div>
+          <div class="phase-body">
+            <h4>Development</h4>
+            <div class="phase-tasks"><span>Development</span><span>Model adaptation</span><span>Agent development</span><span>System integration</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">4</div>
+          <div class="phase-body">
+            <h4>Validation</h4>
+            <div class="phase-tasks"><span>Testing</span><span>Evaluation</span><span>Security review</span><span>Performance optimization</span></div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">5</div>
+          <div class="phase-body">
+            <h4>Live</h4>
+            <div class="phase-tasks"><span>Deployment</span><span>Monitoring</span><span>Continuous improvement</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INDUSTRIES ============ -->
+  <section id="industries">
+    <div class="wrap reveal">
+      <div class="eyebrow">07 · Industries we serve</div>
+      <h2>Domain-specific AI, built for regulated sectors.</h2>
+      <p class="section-intro">Every deployment is shaped by the compliance requirements and workflows specific to the sector it runs in.</p>
+      <div class="industries-grid">
+        <div class="industry-card"><h4>Banking</h4><ul><li>Fraud detection</li><li>Financial assistants</li><li>Risk analysis</li><li>Compliance</li></ul></div>
+        <div class="industry-card"><h4>Healthcare</h4><ul><li>Medical documentation</li><li>Clinical search</li><li>Patient support</li><li>Medical knowledge systems</li></ul></div>
+        <div class="industry-card"><h4>Manufacturing</h4><ul><li>Predictive maintenance</li><li>Industrial AI</li><li>Quality assurance</li><li>Knowledge management</li></ul></div>
+        <div class="industry-card"><h4>Logistics</h4><ul><li>Route optimization</li><li>Inventory intelligence</li><li>Demand forecasting</li><li>Warehouse automation</li></ul></div>
+        <div class="industry-card"><h4>Legal</h4><ul><li>Contract analysis</li><li>Legal research</li><li>Case intelligence</li><li>Document automation</li></ul></div>
+        <div class="industry-card"><h4>Government</h4><ul><li>Citizen services</li><li>Secure AI</li><li>Document management</li><li>Knowledge systems</li></ul></div>
+        <div class="industry-card"><h4>Education</h4><ul><li>AI tutors</li><li>Research assistants</li><li>Learning platforms</li><li>Administrative automation</li></ul></div>
+        <div class="industry-card"><h4>Technology</h4><ul><li>Developer assistants</li><li>Internal copilots</li><li>Knowledge search</li><li>Support automation</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STACK ============ -->
+  <section id="stack">
+    <div class="wrap reveal">
+      <div class="eyebrow">08 · Technology stack</div>
+      <h2>Open, modern, and yours to inspect.</h2>
+      <p class="section-intro">No proprietary black boxes. Every layer of the stack is built on tools your team can audit and extend.</p>
+      <div class="stack-columns">
+        <div>
+          <div class="stack-group">
+            <h5>AI Models</h5>
+            <div class="chip-row"><span class="chip">Llama</span><span class="chip">Qwen</span><span class="chip">Mistral</span><span class="chip">Gemma</span><span class="chip">DeepSeek</span><span class="chip">Phi</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>Machine Learning</h5>
+            <div class="chip-row"><span class="chip">PyTorch</span><span class="chip">Hugging Face Transformers</span><span class="chip">PEFT</span><span class="chip">LoRA</span><span class="chip">Axolotl</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>AI Frameworks</h5>
+            <div class="chip-row"><span class="chip">LangGraph</span><span class="chip">LlamaIndex</span><span class="chip">Haystack</span><span class="chip">DSPy</span><span class="chip">LiteLLM</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>Vector Databases</h5>
+            <div class="chip-row"><span class="chip">Qdrant</span><span class="chip">Weaviate</span><span class="chip">Milvus</span><span class="chip">pgvector</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="stack-group">
+            <h5>Backend</h5>
+            <div class="chip-row"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">PostgreSQL</span><span class="chip">Redis</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>Infrastructure</h5>
+            <div class="chip-row"><span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">NVIDIA GPUs</span><span class="chip">Terraform</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>Cloud</h5>
+            <div class="chip-row"><span class="chip">AWS</span><span class="chip">Azure</span><span class="chip">Google Cloud</span></div>
+          </div>
+          <div class="stack-group">
+            <h5>Monitoring</h5>
+            <div class="chip-row"><span class="chip">Langfuse</span><span class="chip">Grafana</span><span class="chip">Prometheus</span><span class="chip">OpenTelemetry</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECURITY ============ -->
+  <section id="security">
+    <div class="wrap reveal">
+      <div class="eyebrow">10 · Security &amp; compliance</div>
+      <h2>Enterprise security by design.</h2>
+      <p class="section-intro">The same principles apply whether a system runs on your infrastructure or ours.</p>
+      <div class="sec-grid">
+        <div class="sec-item"><div class="sec-check"></div><span>On-premise deployment</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Private cloud deployment</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>End-to-end encryption</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Role-based access control (RBAC)</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Audit logging</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Identity integration</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Data residency support</span></div>
+        <div class="sec-item"><div class="sec-check"></div><span>Compliance-oriented architecture</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEPLOYMENT ============ -->
+  <section id="deployment">
+    <div class="wrap reveal">
+      <div class="eyebrow">11 · Deployment options</div>
+      <h2>Deploy on your terms.</h2>
+      <div class="deploy-grid">
+        <div class="deploy-card"><div class="badge">MAXIMUM SECURITY</div><h4>Fully On-Premise</h4><p>Deployed entirely within your own infrastructure, for organizations with the strictest data control requirements.</p></div>
+        <div class="deploy-card"><div class="badge">SCALABLE</div><h4>Private Cloud</h4><p>Dedicated private cloud infrastructure that scales with demand while remaining fully isolated to your organization.</p></div>
+        <div class="deploy-card"><div class="badge">BALANCED</div><h4>Hybrid</h4><p>The best balance of flexibility and control, combining on-premise and cloud resources where each fits best.</p></div>
+        <div class="deploy-card"><div class="badge">FULLY MANAGED</div><h4>Managed AI Platform</h4><p>INT.AI hosts and manages the solution for you under an enterprise agreement, with full operational ownership.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY US ============ -->
+  <section id="why">
+    <div class="wrap reveal">
+      <div class="eyebrow">12 · Why choose INT.AI</div>
+      <h2>Own it. Don't rent it.</h2>
+      <table class="compare">
+        <thead><tr><th>Traditional AI APIs</th><th>INT.AI</th></tr></thead>
+        <tbody>
+          <tr><td>Generic models</td><td>Organization-specific AI</td></tr>
+          <tr><td>Monthly API costs</td><td>Long-term ownership</td></tr>
+          <tr><td>Vendor lock-in</td><td>Full control</td></tr>
+          <tr><td>Limited customization</td><td>Tailored intelligence</td></tr>
+          <tr><td>External infrastructure</td><td>Private deployment</td></tr>
+          <tr><td>Shared AI</td><td>Dedicated enterprise AI</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ ENGAGEMENT PROCESS ============ -->
+  <section id="engagement">
+    <div class="wrap reveal">
+      <div class="eyebrow">14 · Engagement process</div>
+      <h2>From first conversation to long-term partner.</h2>
+      <div class="steps-strip">
+        <div class="step-cell"><span class="num">01</span><span class="label">Discovery Workshop</span></div>
+        <div class="step-cell"><span class="num">02</span><span class="label">AI Readiness Assessment</span></div>
+        <div class="step-cell"><span class="num">03</span><span class="label">Architecture Design</span></div>
+        <div class="step-cell"><span class="num">04</span><span class="label">Proof of Concept</span></div>
+        <div class="step-cell"><span class="num">05</span><span class="label">Production Development</span></div>
+        <div class="step-cell"><span class="num">06</span><span class="label">Deployment</span></div>
+        <div class="step-cell"><span class="num">07</span><span class="label">Training &amp; Knowledge Transfer</span></div>
+        <div class="step-cell"><span class="num">08</span><span class="label">Long-Term Support</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMMERCIAL MODELS ============ -->
+  <section id="commercial">
+    <div class="wrap reveal">
+      <div class="eyebrow">16 · Commercial models</div>
+      <h2>Flexible engagement options.</h2>
+      <div class="models-grid">
+        <div class="model-card"><div class="type">FIXED FEE</div><h4>AI Readiness Assessment</h4></div>
+        <div class="model-card"><div class="type">FIXED PROJECT</div><h4>Proof of Concept</h4></div>
+        <div class="model-card"><div class="type">MILESTONE-BASED</div><h4>Custom AI Development</h4></div>
+        <div class="model-card"><div class="type">ANNUAL</div><h4>Enterprise Platform Licensing</h4></div>
+        <div class="model-card"><div class="type">SUBSCRIPTION</div><h4>Managed AI Services</h4></div>
+        <div class="model-card"><div class="type">ANNUAL SLA</div><h4>Support &amp; Maintenance</h4></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section id="roadmap">
+    <div class="wrap reveal">
+      <div class="eyebrow">17 · Company roadmap</div>
+      <h2>Building toward a global platform.</h2>
+      <div class="roadmap">
+        <div class="road-item"><span class="year">2026</span><p>Launch the company, deliver the first enterprise projects, and establish repeatable delivery processes.</p></div>
+        <div class="road-item"><span class="year">2027</span><p>Introduce a reusable enterprise AI platform with standardized deployment, monitoring, and governance.</p></div>
+        <div class="road-item"><span class="year">2028</span><p>Expand internationally, build industry-specific AI solutions, and develop a partner ecosystem.</p></div>
+        <div class="road-item"><span class="year">2029+</span><p>Become a leading provider of enterprise AI infrastructure with a global customer base and mature platform.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-top reveal">
+      <h2>Let's build your intelligence layer.</h2>
+      <div class="contact-links">
+        <a href="mailto:contact@int.ai">contact@int.ai</a>
+        <a href="https://int.ai">https://int.ai</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>INT.AI — Enterprise AI Engineering &amp; Infrastructure</span>
+      <span>OWN YOUR INTELLIGENCE.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
